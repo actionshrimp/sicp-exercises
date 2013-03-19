@@ -1,0 +1,25 @@
+#lang planet neil/sicp
+
+(define (simpson f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (coef k)
+    (cond ((= k 0) 1)
+          ((= k n) 1)
+          ((odd? k) 4)
+          ((even? k) 2)))
+  (define (expansion-item k)
+    (* (coef k) (y k)))
+  (define (expansion ks total)
+    (if (>= ks 0)
+        (expansion (- ks 1) (+ total (expansion-item ks)))
+        total))
+  (if (even? n) 
+      (* (/ h 3.0) (expansion n 0))
+      (error "n must be even")))
+
+(define (cube x) (* x x x))
+
+(simpson cube 0.0 1.0 100)
+(simpson cube 0.0 1.0 1000)
+(simpson cube 0.0 1.0 10000)
